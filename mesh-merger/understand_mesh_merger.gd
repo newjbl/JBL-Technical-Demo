@@ -59,8 +59,13 @@ func show_mesh_infor(mesh:MeshInstance3D, mesh_name:String):
 		print(i)
 		
 	print('Mesh.ARRAY_TANGENT are:')
-	for i in _arrays[Mesh.ARRAY_TANGENT]:
-		print(i)
+	var ii = 0
+	while ii + 4 <= _arrays[Mesh.ARRAY_TANGENT].size():
+		print('%s, %s, %s, %s' % [_arrays[Mesh.ARRAY_TANGENT][ii],
+		_arrays[Mesh.ARRAY_TANGENT][ii + 1],
+		_arrays[Mesh.ARRAY_TANGENT][ii + 2],
+		_arrays[Mesh.ARRAY_TANGENT][ii + 3]]) 
+		ii += 4
 	
 	if _arrays[Mesh.ARRAY_COLOR] != null:
 		print('Mesh.ARRAY_COLOR are:')
@@ -78,7 +83,7 @@ func show_mesh_infor(mesh:MeshInstance3D, mesh_name:String):
 
 	print('Mesh.ARRAY_BONES are:')
 	var i = 0
-	while i + 4 < _arrays[Mesh.ARRAY_BONES].size():
+	while i + 4 <= _arrays[Mesh.ARRAY_BONES].size():
 		print('%s, %s, %s, %s' % [_arrays[Mesh.ARRAY_BONES][i],
 		_arrays[Mesh.ARRAY_BONES][i + 1],
 		_arrays[Mesh.ARRAY_BONES][i + 2],
