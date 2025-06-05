@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://c6mxby0fydbpj"
+uid="uid://ccwol6qpln7he"
 path="res://.godot/imported/case2_fix.fbx-e88f7c82e2d8a1e3d838990fe15ddfe3.scn"
 
 [deps]
@@ -33,19 +33,7 @@ animation/trimming=true
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
-_subresources={
-"meshes": {
-"CC_Base_Body": {
-"generate/lightmap_uv": 2,
-"generate/lods": 2,
-"generate/shadow_meshes": 2,
-"lods/normal_merge_angle": 60.0,
-"save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://assets/cc_base_body.tres",
-"save_to_file/path": "uid://8ld5ssl5vl4y"
-}
-}
-}
+_subresources={}
 fbx/importer=0
 fbx/allow_geometry_helper_nodes=false
 fbx/embedded_image_handling=1

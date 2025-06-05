@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1k7r0ey3hw80"]
+
+[ext_resource type="Script" uid="uid://vlogkpyxhvqt" path="res://jbl_save_mesh_3d_infor.gd" id="1_jbuj8"]
+
+[node name="jbl_save_mesh3d_infor" type="Node3D"]
+script = ExtResource("1_jbuj8")

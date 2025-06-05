@@ -19,7 +19,7 @@ func _ready() -> void:
 	merge_meshes()
 	save_mesh_to_file()
 	print("finish!!!")
-	save_mesh_infor(show_mesh)
+	#save_mesh_infor(show_mesh)
 	
 # 修改后的合并函数
 func merge_meshes() -> void:
@@ -28,7 +28,7 @@ func merge_meshes() -> void:
 	var _surface_tool := SurfaceTool.new()
 	_surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for node in [mesh_1, mesh_2]:
-		save_mesh_infor(node)
+		#save_mesh_infor(node)
 		if node is MeshInstance3D and node.mesh is ArrayMesh:
 			_surface_tool.append_from(node.mesh, 0, node.transform)
 	rst_arraymesh = _surface_tool.commit()

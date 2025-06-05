@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1cfopdlygulb"]
+
+[ext_resource type="Script" uid="uid://b8rlsq53h3qg1" path="res://glb_importer.gd" id="1_t1xom"]
+
+[node name="glb_importer" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_t1xom")
