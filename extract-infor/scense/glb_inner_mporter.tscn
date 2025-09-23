@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctmu4jjqdewca"]
+
+[ext_resource type="Script" uid="uid://buwftpqcvdru6" path="res://scense/glb_inner_mporter.gd" id="1_ndjhd"]
+
+[node name="glb_outer_mporter" type="Control"]
+custom_minimum_size = Vector2(1000, 800)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ndjhd")
+
+[node name="CheckBox" type="CheckBox" parent="."]
+layout_mode = 0
+offset_left = 119.0
+offset_top = 214.0
+offset_right = 380.0
+offset_bottom = 275.0

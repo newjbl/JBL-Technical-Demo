@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://c6tonsywmoaje"]
+
+[ext_resource type="Script" uid="uid://bek6hopa6ocqf" path="res://test_show/test_show.gd" id="1_kqd31"]
+[ext_resource type="ArrayMesh" uid="uid://bkn6gsop0gqjv" path="res://test_show/assert/new_array_mesh.res" id="1_kr51a"]
+[ext_resource type="ArrayMesh" uid="uid://bmvrdc8240uqa" path="res://test_show/assert/mesh__CC_Base_Body.res" id="2_qdynx"]
+
+[node name="test_show" type="Node3D"]
+script = ExtResource("1_kqd31")
+
+[node name="MeshCcBaseBody" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_kr51a")
+
+[node name="MeshCcBaseBody2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19439697, 0, -3.1711426)
+mesh = ExtResource("2_qdynx")
