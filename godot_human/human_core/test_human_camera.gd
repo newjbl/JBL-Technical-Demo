@@ -25,7 +25,7 @@ func _ready():
 	size = clamp(size, min_ortho_size, max_ortho_size)
 	_update_camera()
 
-func _process(delta):
+func _process(_delta):
 	# 每帧更新摄像机位置（保证 tween / 平移时即时可见）
 	_update_camera()
 
@@ -34,7 +34,7 @@ func _unhandled_input(event):
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			# 左键：让 human 绕 Y 轴旋转（水平拖动）
 			# 用 rotate_y 做增量旋转，直观且保留原始旋转基线
-			var a = event.relative.x * rotate_speed
+			var _a = event.relative.x * rotate_speed
 			target.rotate_y(event.relative.x * rotate_speed)
 			# 不改变摄像机朝向（仍看向 target + pan_offset）
 		elif Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):

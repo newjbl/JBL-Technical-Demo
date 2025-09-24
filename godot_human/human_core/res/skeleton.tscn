@@ -1,6 +1,8 @@
-[gd_scene load_steps=0 format=3 uid="uid://d4mevww3qdp3x"]
+[gd_scene format=3 uid="uid://c6ulqun6x5h2t"]
 
-[node name="Skeleton3D" type="Skeleton3D"]
+[node name="skeleon_temp" type="Node3D"]
+
+[node name="Skeleton3D" type="Skeleton3D" parent="."]
 bones/0/name = "CC_Base_BoneRoot"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0)

@@ -2,18 +2,32 @@ extends Node3D
 
 @export var human:Node3D
 
+var player_human:PLAYER_NODE_C = null
+
+func _process(_delta: float) -> void:
+	if player_human and player_human.human_ani_tree.active:
+		var _playback = player_human.human_ani_tree.get('parameters/playback')
+		#if playback:
+		#	print("%s, %s" % [playback.get_current_node(), playback.is_playing()])
+		
+	
+	
 func _ready() -> void:
-	var user_human = PLAYER_NODE_C.new()
-	construct_human(user_human)
+	player_human = PLAYER_NODE_C.new()
+	construct_human(player_human)
 
 func construct_human(human_node:PLAYER_NODE_C):
 	var human_struct = human_node['human_struct']
 	var ske:Skeleton3D = human_struct['skeleton']
-	var ani:AnimationPlayer = AnimationPlayer.new()
-	human.add_child(ani)
-	var ani_tree:AnimationTree = AnimationTree.new()
-	human.add_child(ani_tree)
+	ske.name = 'Skeleton3D'
 	human.add_child(ske)
+	var ani_player:AnimationPlayer = human_node.human_ani_player
+	ani_player.root_node = human.get_path()
+	human.add_child(ani_player)
+	var ani_tree:AnimationTree = human_node.human_ani_tree
+	#ani_tree.root_node = human.get_path()
+	human.add_child(ani_tree)
+	
 	for eachone in human_struct['mesh3ds']:
 		if eachone != null:
 			human.add_child(eachone)
@@ -38,7 +52,7 @@ func align_children_to_bottom():
 	var off_set = 0
 	for child in human.get_children():
 		if child is MeshInstance3D and child.name == 'body':
-			var aabb = child.get_aabb()
+			var _aabb = child.get_aabb()
 			off_set = get_mesh_bottom_in_world(child)
 			break
 	for child in human.get_children():
@@ -57,3 +71,5 @@ func get_mesh_bottom_in_world(mesh_instance: MeshInstance3D) -> float:
 	# 转换到世界坐标
 	var world_bottom = mesh_instance.to_global(local_bottom)
 	return world_bottom.y
+
+	

@@ -4,6 +4,9 @@ extends HUMAN_DATA_AC
 
 var human_skeleton:Skeleton3D = null
 
+var human_ani_player:AnimationPlayer = null
+var human_ani_tree:AnimationTree = null
+
 var human_body_mesh3d:MeshInstance3D = null
 var human_eye_mesh3d:MeshInstance3D = null
 var human_eyeo_mesh3d:MeshInstance3D = null
@@ -16,6 +19,7 @@ var human_dir:String = ''
 func create_huma_main():
 	set_human_data()
 	create_human_skeleton()
+	create_human_ani()
 	create_human_mesh()
 	create_human_texture()
 	
@@ -30,7 +34,7 @@ func set_human_data():
 	
 	human_dir = "res://human_core/res/extract__base_aaa/"
 	human_look_o.skeleton_path = "res://human_core/res/skeleton.tscn"
-	human_look_o.ani_tree_path = ''
+	human_look_o.ani_tree_path = "res://human_core/ani/ani_temp.tscn"
 	human_look_o.mesh_body = human_dir.path_join("mesh__CC_Base_Body.tres")
 	human_look_o.mesh_eye = human_dir.path_join("mesh__CC_Base_Eye.tres")
 	human_look_o.mesh_eyeo = human_dir.path_join("mesh__CC_Base_EyeOcclusion.tres")
@@ -77,7 +81,14 @@ func update_mesh_infor(a:String, c:String, d:String):
 	
 func create_human_skeleton():
 	if human_look_o.skeleton_path != '':
-		human_skeleton = load(human_look_o.skeleton_path).instantiate() 
+		human_skeleton = load(human_look_o.skeleton_path).instantiate().get_child(0).duplicate()
+
+func create_human_ani():
+	var ani_tscn:Node3D = load(human_look_o.ani_tree_path).instantiate()
+	human_ani_player = ani_tscn.get_child(0).duplicate()
+	human_ani_tree = ani_tscn.get_child(1).duplicate()
+
+
 	
 func create_human_mesh():
 	human_body_mesh3d = update_mesh_infor(human_look_o.mesh_body, human_look_o.skin_body, 'body')
@@ -114,8 +125,6 @@ func create_human_texture():
 func create_human_cloth():
 	pass
 	
-func create_human_ani():
-	pass
 	
 func create_human_item():
 	pass
