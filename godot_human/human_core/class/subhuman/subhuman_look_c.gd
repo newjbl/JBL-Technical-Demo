@@ -24,6 +24,13 @@ var skin_tear:String = ''
 var skin_tee:String = ''
 var skin_tong:String = ''
 
+var blend_body:String = ''
+var blend_eye:String = ''
+var blend_eyeo:String = ''
+var blend_tear:String = ''
+var blend_tee:String = ''
+var blend_tong:String = ''
+
 var texa_body:Array = []
 var texa_eye:Array = []
 var texa_eyeo:Array = []

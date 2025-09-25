@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://csmq0q8cjy3kw"]
+[gd_scene load_steps=9 format=3 uid="uid://csmq0q8cjy3kw"]
 
 [ext_resource type="ArrayMesh" uid="uid://jfbx10bkk15r" path="res://human_core/res/extract__base_aaa/mesh__CC_Base_Body.tres" id="1_7fdgu"]
-[ext_resource type="Animation" uid="uid://bxjw0vot88utw" path="res://human_core/ani/male_emote.tres" id="1_flcbp"]
+[ext_resource type="Animation" uid="uid://da221cule0ofi" path="res://human_core/ani/male_emote.tres" id="1_flcbp"]
 [ext_resource type="Skin" path="res://human_core/res/extract__base_aaa/skin__CC_Base_Body.tres" id="2_kaycd"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_x2kd3"]
@@ -21,6 +21,9 @@ states/ani_lib_male_emote/node = SubResource("AnimationNodeAnimation_7fdgu")
 states/ani_lib_male_emote/position = Vector2(353, 95)
 transitions = ["Start", "ani_lib_male_emote", SubResource("AnimationNodeStateMachineTransition_kaycd")]
 
+[sub_resource type="BoxMesh" id="BoxMesh_7fdgu"]
+size = Vector3(10, 10, 10)
+
 [node name="ani_temp" type="Node3D"]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -36,7 +39,6 @@ anim_player = NodePath("../AnimationPlayer")
 [node name="body" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1_7fdgu")
 skin = ExtResource("2_kaycd")
-skeleton = NodePath("../Skeleton3D")
 
 [node name="Skeleton3D" type="Skeleton3D" parent="."]
 bones/0/name = "CC_Base_BoneRoot"
@@ -309,8 +311,8 @@ bones/38/name = "CC_Base_Head"
 bones/38/parent = 37
 bones/38/rest = Transform3D(1, -2.8441544e-12, 2.8110064e-12, 2.0998786e-12, 0.97171557, 0.23615408, -3.403158e-12, -0.2361541, 0.9717155, 7.8665046e-08, 3.7590778, -9.417534e-06)
 bones/38/enabled = true
-bones/38/position = Vector3(-0.108689085, 3.7589624, 1.44025325e-05)
-bones/38/rotation = Quaternion(-0.10426848, -0.0318043, 0.0046788715, 0.9940295)
+bones/38/position = Vector3(-0.114461154, 3.758897, 1.5320275e-05)
+bones/38/rotation = Quaternion(-0.10583372, -0.03424872, 0.0039415993, 0.99378604)
 bones/38/scale = Vector3(1, 0.99999994, 0.9999999)
 bones/39/name = "CC_Base_FacialBone"
 bones/39/parent = 38
@@ -323,8 +325,8 @@ bones/40/name = "CC_Base_JawRoot"
 bones/40/parent = 39
 bones/40/rest = Transform3D(3.862381e-05, -0.99999994, -0.00014310544, 0.99999994, 3.862381e-05, 2.3975292e-05, -2.396977e-05, -0.00014310636, 1, 1.2687978, 2.3867998, -6.27654e-08)
 bones/40/enabled = true
-bones/40/position = Vector3(1.2687942, 2.4113882, 3.5600948e-08)
-bones/40/rotation = Quaternion(-5.895864e-05, -4.2002786e-05, 0.71292025, 0.7012452)
+bones/40/position = Vector3(1.2687843, 2.407841, 0.00088583597)
+bones/40/rotation = Quaternion(-5.897559e-05, -4.2038926e-05, 0.71243876, 0.7017343)
 bones/40/scale = Vector3(0.99999994, 0.99999994, 1)
 bones/41/name = "CC_Base_Tongue01"
 bones/41/parent = 40
@@ -359,14 +361,14 @@ bones/45/parent = 39
 bones/45/rest = Transform3D(-0.00012934208, 0.00015429489, 1, -0.0001383439, -1, 0.000154277, 1, -0.00013832394, 0.00012922287, 6.904576, 7.3160815, -3.1258562)
 bones/45/enabled = true
 bones/45/position = Vector3(6.9046, 7.3160954, -3.12589)
-bones/45/rotation = Quaternion(0.7059455, -0.00077298284, 0.70715547, 0.03964268)
+bones/45/rotation = Quaternion(0.7063415, 0.0053953473, 0.70714283, 0.03164991)
 bones/45/scale = Vector3(1, 1, 1)
 bones/46/name = "CC_Base_L_Eye"
 bones/46/parent = 39
 bones/46/rest = Transform3D(0.00012922287, -0.00013859115, 1, 0.00015454626, -0.9999999, -0.00013861114, 1, 0.00015456416, -0.00012920145, 6.9045763, 7.316084, 3.1262846)
 bones/46/enabled = true
 bones/46/position = Vector3(6.9045973, 7.316097, 3.1262507)
-bones/46/rotation = Quaternion(0.70623976, -0.0045760777, 0.70704365, 0.035969917)
+bones/46/rotation = Quaternion(0.70657945, 0.0019856934, 0.70706123, 0.028390042)
 bones/46/scale = Vector3(1, 0.9999999, 1)
 bones/47/name = "CC_Base_UpperJaw"
 bones/47/parent = 39
@@ -749,3 +751,6 @@ bones/100/scale = Vector3(1, 0.99999994, 0.9999999)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 147.52972, 95.76834)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_7fdgu")
