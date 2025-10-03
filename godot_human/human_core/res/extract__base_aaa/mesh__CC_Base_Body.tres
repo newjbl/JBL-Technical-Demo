@@ -1,5 +1,4 @@
-[gd_resource type="ArrayMesh" format=4 uid="uid://jfbx10bkk15r"]
-
+[gd_resource type="ArrayMesh" load_steps=18 format=4]
 [resource]
 resource_name = "base_aaa_CC_Base_Body"
 _surfaces = [{

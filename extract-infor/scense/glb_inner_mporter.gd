@@ -4,11 +4,11 @@ extends Control
 const tmp_dir = "res://tmp_glb"
 
 var file_dialog: FileDialog
-var dir_dialog: FileDialog
+var gdir_dialog: FileDialog
 var selected_files = []
-var output_dir = ""
+var goutput_dir = ""
 var progress: ProgressBar
-var log: TextEdit
+var tlog: TextEdit
 var import_btn: Button
 var config: ConfigFile
 var file_edit: LineEdit
@@ -99,10 +99,10 @@ func _ready():
 	progress.value = 0
 	progress.visible = false
 	vbox.add_child(progress)
-	log = TextEdit.new()
-	log.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	log.editable = false
-	vbox.add_child(log)
+	tlog = TextEdit.new()
+	tlog.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	tlog.editable = false
+	vbox.add_child(tlog)
 	# 设置文件对话框 (600x400)
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILES
@@ -112,12 +112,12 @@ func _ready():
 	file_dialog.min_size = Vector2(500, 300)
 	add_child(file_dialog)
 	# 设置目录对话框 (600x400)
-	dir_dialog = FileDialog.new()
-	dir_dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
-	dir_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	dir_dialog.dir_selected.connect(update_output_dir)
-	dir_dialog.min_size = Vector2(500, 300)
-	add_child(dir_dialog)
+	gdir_dialog = FileDialog.new()
+	gdir_dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
+	gdir_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	gdir_dialog.dir_selected.connect(update_output_dir)
+	gdir_dialog.min_size = Vector2(500, 300)
+	add_child(gdir_dialog)
 	# 加载配置
 	_load_config()
 
@@ -154,7 +154,7 @@ func update_input_dir(files):
 	_save_config()
 	
 func update_output_dir(dir):
-	output_dir = dir
+	goutput_dir = dir
 	dir_edit.text = dir
 	# 保存选择的目录
 	_save_config()
@@ -165,7 +165,7 @@ func _on_browse_files():
 
 func _on_browse_dir():
 	# 目录对话框尺寸 600x400
-	dir_dialog.popup_centered(Vector2i(600, 400))
+	gdir_dialog.popup_centered(Vector2i(600, 400))
 
 # 加载上次的配置
 func _load_config():
@@ -175,8 +175,8 @@ func _load_config():
 		selected_files = config.get_value("settings", "selected_files", [])
 		if not selected_files.is_empty():
 			file_edit.text = "%d files selected" % selected_files.size()
-		output_dir = config.get_value("settings", "output_dir", "")
-		dir_edit.text = output_dir
+		goutput_dir = config.get_value("settings", "output_dir", "")
+		dir_edit.text = goutput_dir
 		mesh_type = config.get_value('settings', 'mesh_type', 'tres')
 		texture_type = config.get_value('settings', 'texture_type', '')
 		texture_compress = config.get_value('settings', 'texture_compress', false)
@@ -198,7 +198,7 @@ func _load_config():
 # 保存当前配置
 func _save_config():
 	config.set_value("settings", "selected_files", selected_files)
-	config.set_value("settings", "output_dir", output_dir)
+	config.set_value("settings", "output_dir", goutput_dir)
 	config.set_value("settings", "mesh_type", mesh_type)
 	config.set_value("settings", "texture_type", texture_type)
 	config.set_value("settings", "texture_compress", texture_compress)
@@ -250,11 +250,11 @@ func delete_dir_recursive(path: String) -> void:
 	
 
 func _on_import():
-	if selected_files.is_empty() or output_dir.is_empty():
+	if selected_files.is_empty() or goutput_dir.is_empty():
 		_log_error("Please select files and output directory")
 		return
 	# 检查输出目录
-	var dir = DirAccess.open(output_dir)
+	var dir = DirAccess.open(goutput_dir)
 	if dir == null:
 		_log_error("Output directory does not exist or is not accessible")
 		return
@@ -267,7 +267,7 @@ func _on_import():
 	for i in range(total_files):
 		var file_path = selected_files[i]
 		_log("Processing: " + file_path)
-		var this_out_dir = create_output_dir(output_dir, file_path)
+		var this_out_dir = create_output_dir(goutput_dir, file_path)
 		_process_glb(file_path, this_out_dir)
 		progress.value = (float(i + 1) / total_files) * 100
 		# 允许UI更新
@@ -278,13 +278,13 @@ func _on_import():
 	_save_config()
 
 func _log(message):
-	log.text += message + "\n"
+	tlog.text += message + "\n"
 	# 滚动到底部
-	log.scroll_vertical = log.get_line_count()
+	tlog.scroll_vertical = tlog.get_line_count()
 
 func _log_error(message):
-	log.text += "[ERROR] " + message + "\n"
-	log.scroll_vertical = log.get_line_count()
+	tlog.text += "[ERROR] " + message + "\n"
+	tlog.scroll_vertical = tlog.get_line_count()
 
 func _process_glb(file_path, output_dir):
 	# 加载 GLB 场景
@@ -295,67 +295,83 @@ func _process_glb(file_path, output_dir):
 	# 实例化场景
 	var instance = glb_scene.instantiate()
 	_process_scene(instance, output_dir)
-	
-	
-func fix_mesh_tres(dir_path: String) -> Array:
-	var processed_files: Array = []
-	var dir := DirAccess.open(dir_path)
-	if dir == null:
-		push_error("Cannot open directory: %s" % dir_path)
-		return processed_files
-	dir.list_dir_begin()
-	var file_name = dir.get_next()
-	while file_name != "":
-		if file_name.begins_with("mesh_") and file_name.ends_with(".%s"%[mesh_type]):
-			var file_path = dir_path.path_join(file_name)
-			var lines: PackedStringArray = []
-			var f := FileAccess.open(file_path, FileAccess.READ)
-			if f:
-				lines = f.get_as_text().split("\n", false)
-				f.close()
-			if lines.size() == 0:
-				file_name = dir.get_next()
+
+func fix_mesh_tres_details(file_list:Array, keep_blend:bool=false):
+	for file_path in file_list:
+		var lines: PackedStringArray = []
+		var f := FileAccess.open(file_path, FileAccess.READ)
+		if f:
+			lines = f.get_as_text().split("\n", false)
+			f.close()
+		if lines.size() == 0:
+			return
+		var new_lines: Array = []
+		new_lines.append(lines[0])  # 保留第一行
+		var inside_resource := false
+		var valid_block: Array = []
+		var _a = lines.size()
+		for i in range(1, lines.size()):
+			var line: String = lines[i]
+			var stripped := line.strip_edges()
+			if stripped == "[resource]":
+				inside_resource = true
+				valid_block.clear()
+				valid_block.append(line)
 				continue
-			var new_lines: Array = []
-			new_lines.append(lines[0])  # 保留第一行
-			var inside_resource := false
-			var valid_block: Array = []
-			for i in range(1, lines.size()):
-				var line: String = lines[i]
-				var stripped := line.strip_edges()
-				if stripped == "[resource]":
-					inside_resource = true
-					valid_block.clear()
-					valid_block.append(line)
-					continue
-				if inside_resource:
+			if inside_resource:
+				if keep_blend == true:
+					if i == lines.size() - 1:
+						inside_resource = false
+						valid_block.append(line)
+						new_lines.append_array(valid_block)
+						valid_block.clear()
+						continue
+				else:
 					if "blend_shape_mode" in stripped:
 						inside_resource = false
 						new_lines.append_array(valid_block)
 						valid_block.clear()
 						continue
+				if stripped.find("material") != -1:
+					continue
+				if keep_blend == false:
 					if stripped.find("_blend_shape_names") != -1 \
-					or stripped.find("blend_shapes") != -1 \
-					or stripped.find("material") != -1:
+					or stripped.find("blend_shapes") != -1 :
 						continue  # 删除这些字段
-					valid_block.append(line)
-			# 覆盖写回文件
-			var fw := FileAccess.open(file_path, FileAccess.WRITE)
-			if fw:
-				for l in new_lines:
-					fw.store_line(l)
-				fw.close()
-			processed_files.append(file_path)
+				valid_block.append(line)
+		# 覆盖写回文件
+		var fw := FileAccess.open(file_path, FileAccess.WRITE)
+		if fw:
+			for l in new_lines:
+				#print("will write:  %s" % [l])
+				fw.store_line(l)
+			fw.close()
+	
+func fix_mesh_tres(dir_path: String) -> void:
+	var dir := DirAccess.open(dir_path)
+	if dir == null:
+		push_error("Cannot open directory: %s" % dir_path)
+		return
+	var file_list_1:Array = []
+	var file_list_2:Array = []
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	while file_name != "":
+		if file_name.begins_with("mesh_") and file_name.ends_with(".%s"%[mesh_type]):
+			copy_file(dir_path.path_join(file_name), dir_path.path_join(file_name.replace(".", "_all.")))
+			file_list_1.append(dir_path.path_join(file_name))
+			file_list_2.append(dir_path.path_join(file_name.replace(".", "_all.")))
 		file_name = dir.get_next()
 	dir.list_dir_end()
-	return processed_files
+	fix_mesh_tres_details(file_list_1, false)
+	fix_mesh_tres_details(file_list_2, true)
 
 func save_blend_shape_bin(path: String, data: Dictionary) -> void:
 	var f = FileAccess.open(path, FileAccess.WRITE)
 	f.store_var(data) # 直接保存 Godot 内部结构（支持 PackedArray）
 	f.close()
 	if blend_json_copy:
-		save_dict_to_json(data, path.replace('.bin', '.json'))
+		save_dict_to_json(data, path.replace('.res', '.json'))
 
 
 func save_dict_to_json(dict_data: Dictionary, file_path: String):
@@ -379,14 +395,14 @@ func _process_scene(instance, output_dir):
 		
 		
 	# 遍历所有 MeshInstance3D
-	var mesh_count = 0
+	var _mesh_count = 0
 	for mesh_instance in instance.find_children("*", "MeshInstance3D", true):
 		var node_mesh = mesh_instance.mesh
 		var node_name = mesh_instance.name
 		var clean_name = node_name.replace(":", "_").replace("/", "_").replace("\\", "_")
 		if node_mesh:
 			var mesh_path = output_dir.path_join("mesh__%s.%s"%[clean_name, mesh_type])
-			var blend_path = output_dir.path_join("blend__%s.bin"%[clean_name])
+			var blend_path = output_dir.path_join("blend__%s.res"%[clean_name])
 			ResourceSaver.save(node_mesh, mesh_path)
 			var blend_dict = _extract_blend_shape_data(node_mesh, clean_name, output_dir)
 			save_blend_shape_bin(blend_path, blend_dict)
@@ -409,12 +425,18 @@ func _process_scene(instance, output_dir):
 				else:
 					_log("No material found for surface " + str(surface_idx) + " on " + node_name)
 
-	var mesh_tres_list = fix_mesh_tres(output_dir)
-	
+	fix_mesh_tres(output_dir)
+
+func copy_file(src_path: String, dst_path: String) -> void:
+	var err = DirAccess.copy_absolute(src_path, dst_path)
+	if err == OK:
+		print("复制成功: %s -> %s" % [src_path, dst_path])
+	else:
+		push_error("复制失败，错误码: %s" % err)
 	
 			
 # 提取blend shape数据到单独资源
-func _extract_blend_shape_data(mesh: ArrayMesh, clean_name:String, output_dir:String):
+func _extract_blend_shape_data(mesh: ArrayMesh, _clean_name:String, _output_dir:String):
 	var blend_rst = {}
 	var shape_count = mesh.get_blend_shape_count()
 	for sf_idx in mesh.get_surface_count():
@@ -515,8 +537,8 @@ func _extract_textures(mat, base_name, output_dir, surface_index=0):
 	# 保存所有纹理
 	for tex_data in textures:
 		_save_texture(tex_data.texture, tex_data.path)
-		if texture_type == 'webp':
-			convert_to_webp_same_path(tex_data.path)
+		#if texture_type == 'webp':
+		#	convert_to_webp_same_path(tex_data.path)
 
 func _save_texture(texture, path):
 	if texture is ImageTexture:
@@ -549,14 +571,16 @@ func _save_texture(texture, path):
 
 func copy_image_file(src_path: String, dst_path: String) -> void:
 	if texture_type == 'webp':
-		var img := Image.new()
-		var err = img.load(src_path)
-		if err != OK:
+		var tex := ResourceLoader.load(src_path)
+		var img:Image = null
+		if tex and (tex is CompressedTexture2D or tex is Texture2D):
+			img = tex.get_image()
+		if img == null:
 			push_error("加载图片失败: %s" % src_path)
 			return
 		# 生成目标路径（只改扩展名为 .webp）
 		dst_path = dst_path.get_basename() + ".webp"
-		err = img.save_webp(dst_path, texture_compress, 1.0) # 0.9 表示高质量
+		var err = img.save_webp(dst_path, texture_compress, 1.0) # 0.9 表示高质量
 		if err != OK:
 			push_error("保存 WebP 失败: %s" % dst_path)
 		else:
@@ -573,8 +597,8 @@ func save_skeleton_to_file(skeleton: Skeleton3D, file_path: String) -> void:
 	var bone_count = skeleton.get_bone_count()
 	for i in range(bone_count):
 		var rest = skeleton.get_bone_rest(i)
-		var a = rest.basis
-		var b = rest.origin
+		var _a = rest.basis
+		var _b = rest.origin
 		var r = [[rest.basis.x.x, rest.basis.x.y, rest.basis.x.z],
 			[rest.basis.y.x, rest.basis.y.y, rest.basis.y.z],
 			[rest.basis.z.x, rest.basis.z.y, rest.basis.z.z],
